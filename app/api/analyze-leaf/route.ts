@@ -10,10 +10,7 @@ export async function POST(req: Request) {
 
     // 2. Validate image
     if (!image) {
-      return NextResponse.json(
-        { error: "No image uploaded" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No image uploaded" }, { status: 400 });
     }
 
     // 3. Convert image to base64
@@ -31,12 +28,60 @@ export async function POST(req: Request) {
     ]);
 
     // 5. Extract text response
-    const analysis = result.response.text();
+    const rawText = result.response.text();
+
+    let parsedAnalysis;
+
+    try {
+      parsedAnalysis = JSON.parse(rawText);
+      // Ensure treatments always exist (defensive programming)
+      if (!parsedAnalysis.treatments) {
+        parsedAnalysis.treatments = {
+          organic: {
+            what: "Neem oil spray",
+            how: "Spray evenly on affected leaves",
+            dosage: "3–5 ml per liter of water",
+            safety: "Apply in the morning or evening",
+          },
+          chemical: {
+            what: "Recommended fungicide/insecticide",
+            how: "Apply as per manufacturer instructions",
+            dosage: "Follow label dosage",
+            safety: "Use protective equipment",
+          },
+        };
+      }
+    } catch (error) {
+      console.error("JSON parse failed, using fallback structure");
+
+      parsedAnalysis = {
+        issue: "Unable to determine precisely",
+        confidence: "Low",
+        symptoms: ["General leaf discoloration or stress detected"],
+        reasoning:
+          "The image quality or symptoms were not clear enough for a confident diagnosis. This is a precautionary assessment.",
+
+        treatments: {
+          organic: {
+            what: "Neem oil spray",
+            how: "Spray evenly on both sides of the leaves",
+            dosage: "3–5 ml per liter of water",
+            safety: "Apply during early morning or late evening",
+          },
+          chemical: {
+            what: "Broad-spectrum fungicide",
+            how: "Apply as a foliar spray covering affected plants",
+            dosage: "As per label instructions",
+            safety: "Wear gloves and mask; avoid spraying in windy conditions",
+          },
+        },
+      };
+    }
 
     // 6. Return response
     return NextResponse.json({
       success: true,
-      analysis,
+      analysis: parsedAnalysis,
     });
   } catch (error) {
     console.error("Analyze leaf error:", error);

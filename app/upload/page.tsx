@@ -4,7 +4,8 @@ import { useState } from "react";
 
 export default function UploadPage() {
   const [image, setImage] = useState<File | null>(null);
-  const [result, setResult] = useState<string>("");
+  const [result, setResult] = useState<any>(null);
+
   const [loading, setLoading] = useState(false);
 
   const handleAnalyze = async () => {
@@ -23,7 +24,7 @@ export default function UploadPage() {
       });
 
       const data = await response.json();
-      setResult(data.analysis || "No analysis returned");
+      setResult(data.analysis || null);
     } catch (error) {
       setResult("Something went wrong while analyzing the image.");
     } finally {
@@ -70,8 +71,96 @@ export default function UploadPage() {
 
       {result && (
         <div style={{ marginTop: "2rem" }}>
-          <h3>Analysis Result</h3>
-          <p style={{ whiteSpace: "pre-line" }}>{result}</p>
+          <h2>AI Diagnosis & Explanation</h2>
+
+          {/* 1. Detected Issue */}
+          <div style={{ marginTop: "1rem" }}>
+            <strong>Detected Issue</strong>
+            <p>{result.issue}</p>
+          </div>
+
+          {/* 2. Confidence Level */}
+          <div style={{ marginTop: "1rem" }}>
+            <strong>Confidence Level</strong>
+            <p>{result.confidence}</p>
+          </div>
+
+          {/* 3. Visual Symptoms */}
+          <div style={{ marginTop: "1rem" }}>
+            <strong>Visual Symptoms Observed</strong>
+            <ul>
+              {result.symptoms?.map((symptom: string, index: number) => (
+                <li key={index}>{symptom}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 4. Why Gemini Thinks This */}
+          <div style={{ marginTop: "1rem" }}>
+            <strong>Why the AI Thinks This</strong>
+            <p>{result.reasoning}</p>
+          </div>
+          {/* Action Layer: Treatment Recommendations */}
+          <div style={{ marginTop: "2rem" }}>
+            <h2>Recommended Treatment Actions</h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1rem",
+                marginTop: "1rem",
+              }}
+            >
+              {/* Organic Treatment */}
+              <div
+                style={{
+                  border: "1px solid #cce5cc",
+                  padding: "1rem",
+                  borderRadius: "6px",
+                  backgroundColor: "#f3faf3",
+                }}
+              >
+                <h3>🌱 Organic Treatment</h3>
+                <p>
+                  <strong>What:</strong> {result.treatments.organic.what}
+                </p>
+                <p>
+                  <strong>How:</strong> {result.treatments.organic.how}
+                </p>
+                <p>
+                  <strong>Dosage:</strong> {result.treatments.organic.dosage}
+                </p>
+                <p>
+                  <strong>Safety:</strong> {result.treatments.organic.safety}
+                </p>
+              </div>
+
+              {/* Chemical Treatment */}
+              <div
+                style={{
+                  border: "1px solid #f5c2c2",
+                  padding: "1rem",
+                  borderRadius: "6px",
+                  backgroundColor: "#fff5f5",
+                }}
+              >
+                <h3>⚠️ Chemical Treatment</h3>
+                <p>
+                  <strong>What:</strong> {result.treatments.chemical.what}
+                </p>
+                <p>
+                  <strong>How:</strong> {result.treatments.chemical.how}
+                </p>
+                <p>
+                  <strong>Dosage:</strong> {result.treatments.chemical.dosage}
+                </p>
+                <p>
+                  <strong>Safety:</strong> {result.treatments.chemical.safety}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </main>
