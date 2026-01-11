@@ -2,6 +2,19 @@ import { NextResponse } from "next/server";
 import { geminiModel } from "../../lib/gemini";
 import { leafAnalysisPrompt } from "../../lib/prompt";
 
+function extractJSON(text: string) {
+  const cleaned = text
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .trim();
+
+  const match = cleaned.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error("No JSON found");
+
+  return JSON.parse(match[0]);
+}
+
+
 export async function POST(req: Request) {
   try {
     // 1. Read form data
@@ -33,9 +46,11 @@ export async function POST(req: Request) {
     let parsedAnalysis;
 
     try {
-      parsedAnalysis = JSON.parse(rawText);
+      parsedAnalysis = extractJSON(rawText);
+
       // Ensure treatments always exist (defensive programming)
       if (!parsedAnalysis.treatments) {
+        console.log("failed");
         parsedAnalysis.treatments = {
           organic: {
             what: "Neem oil spray",
@@ -52,7 +67,7 @@ export async function POST(req: Request) {
         };
       }
     } catch (error) {
-      console.error("JSON parse failed, using fallback structure");
+      console.log("JSON parse failed, using fallback structure");
 
       parsedAnalysis = {
         issue: "Unable to determine precisely",
