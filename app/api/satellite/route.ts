@@ -1,21 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import ee from "@google/earthengine";
-
 import { initEarthEngine } from "../../lib/earthEngine";
 
-export async function GET() {
+export async function POST(req: NextRequest) {
   try {
-    // Hardcoded demo location (India)
-    const lat = 20.5937;
-    const lon = 78.9629;
-    
     await initEarthEngine();
 
-    const point = ee.Geometry.Point([lon, lat]);
+    const { polygon } = await req.json();
+
+    if (!polygon) {
+      return NextResponse.json(
+        { error: "Polygon is required" },
+        { status: 400 }
+      );
+    }
+
+    const fieldGeometry = ee.Geometry.Polygon(polygon);
 
     const image = ee
       .ImageCollection("COPERNICUS/S2")
-      .filterBounds(point)
+      .filterBounds(fieldGeometry)
       .filterDate("2024-01-01", "2024-01-31")
       .sort("CLOUDY_PIXEL_PERCENTAGE")
       .first();
@@ -24,7 +28,7 @@ export async function GET() {
 
     const stats = ndvi.reduceRegion({
       reducer: ee.Reducer.mean(),
-      geometry: point,
+      geometry: fieldGeometry,
       scale: 10,
       maxPixels: 1e9,
     });
@@ -39,7 +43,7 @@ export async function GET() {
     return NextResponse.json({
       ndvi: ndviValue,
       status,
-      source: "Sentinel-2 (NIR)",
+      source: "Sentinel-2 (Field NDVI)",
     });
   } catch (error) {
     console.error(error);

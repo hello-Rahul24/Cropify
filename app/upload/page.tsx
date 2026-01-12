@@ -12,11 +12,7 @@ export default function UploadPage() {
     source: string;
   }>(null);
 
-  async function handleSatelliteAnalysis() {
-    const res = await fetch("/api/satellite");
-    const data = await res.json();
-    setSatelliteResult(data);
-  }
+
 
   const handleAnalyze = async () => {
     if (!image) return;
@@ -114,19 +110,12 @@ export default function UploadPage() {
           </div>
         )}
         {/*will make it better*/}
-        <button
-          onClick={handleSatelliteAnalysis}
+        <a href="/field-analysis"><button
           className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
         >
           Analyze Field via Satellite
-        </button>
-        {satelliteResult && (
-          <div className="mt-4 p-3 border rounded">
-            <p>NDVI: {satelliteResult.ndvi}</p>
-            <p>Status: {satelliteResult.status}</p>
-            <p>Source: {satelliteResult.source}</p>
-          </div>
-        )}
+        </button></a>
+        
 
         {/* Results Section */}
         {result && (
