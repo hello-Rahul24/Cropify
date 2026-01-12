@@ -31,8 +31,9 @@ export default function LandingPage() {
         </p>
         
         {/* CTA Button */}
+        
         <a
-          href="/analyze"
+          href="/upload"
           className="inline-flex items-center gap-2 px-8 py-4 bg-zinc-900 text-white rounded-2xl text-base font-medium hover:bg-zinc-800 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer"
         >
           Analyze Crop Image
