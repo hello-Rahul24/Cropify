@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-
 export default function UploadPage() {
   const [image, setImage] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
@@ -12,7 +11,7 @@ export default function UploadPage() {
     if (!image) return;
 
     setLoading(true);
-    setResult("");
+    setResult(null);
 
     const formData = new FormData();
     formData.append("image", image);
@@ -61,7 +60,8 @@ export default function UploadPage() {
         </div>
 
         {/* Upload Section */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100 mb-8">
+        {!result && (
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100 mb-8">
           <div className="flex flex-col items-center">
             {/* Custom File Input */}
             <label className="cursor-pointer group">
@@ -96,10 +96,39 @@ export default function UploadPage() {
             </button>
           </div>
         </div>
+        )}
+        
 
         {/* Results Section */}
         {result && (
           <div className="space-y-6">
+            {/* Uploaded Image with Annotations */}
+            {image && (
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100">
+                <h2 className="text-3xl font-light text-zinc-900 mb-8">
+                  Analyzed Image
+                </h2>
+                <div className="flex flex-col items-center">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="Uploaded leaf"
+                    className="max-w-full h-auto rounded-2xl shadow-md mb-6"
+                  />
+                  <div className="w-full">
+                    <strong className="text-sm font-medium text-emerald-700 block mb-3">Visual Annotations</strong>
+                    <ul className="space-y-2">
+                      {result.visual_annotations?.map((annotation: string, index: number) => (
+                        <li key={index} className="text-zinc-900 font-light flex items-start">
+                          <span className="text-emerald-600 mr-3 text-lg">•</span>
+                          <span>{annotation}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Diagnosis */}
             <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100">
               <h2 className="text-3xl font-light text-zinc-900 mb-8">
@@ -113,10 +142,30 @@ export default function UploadPage() {
                   <p className="text-zinc-900 font-light text-lg">{result.issue}</p>
                 </div>
 
-                {/* Confidence Level */}
-                <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
-                  <strong className="text-sm font-medium text-emerald-700 block mb-2">Confidence Level</strong>
-                  <p className="text-zinc-900 font-light">{result.confidence}</p>
+                {/* Summary Card: Confidence, Severity, Urgency, Lifecycle */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                    <strong className="text-sm font-medium text-emerald-700 block mb-2">Confidence Level</strong>
+                    <p className="text-zinc-900 font-light">{result.confidence}</p>
+                  </div>
+                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                    <strong className="text-sm font-medium text-emerald-700 block mb-2">Severity</strong>
+                    <p className="text-zinc-900 font-light">{result.severity}</p>
+                  </div>
+                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                    <strong className="text-sm font-medium text-emerald-700 block mb-2">Lifecycle Stage</strong>
+                    <p className="text-zinc-900 font-light">{result.lifecycle_stage}</p>
+                  </div>
+                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                    <strong className="text-sm font-medium text-emerald-700 block mb-2">Urgency</strong>
+                    <p className="text-zinc-900 font-light">{result.urgency}</p>
+                  </div>
+                </div>
+
+                {/* Yield Impact */}
+                <div className="p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200">
+                  <strong className="text-sm font-medium text-yellow-700 block mb-2">Estimated Yield Impact (if untreated)</strong>
+                  <p className="text-zinc-900 font-light">{result.yield_impact}</p>
                 </div>
 
                 {/* Visual Symptoms */}
@@ -170,6 +219,10 @@ export default function UploadPage() {
                       <strong className="font-medium text-emerald-700 block mb-1">Safety:</strong>
                       <span className="text-zinc-700 font-light">{result.treatments.organic.safety}</span>
                     </p>
+                    <p>
+                      <strong className="font-medium text-emerald-700 block mb-1">Environmental Impact:</strong>
+                      <span className="text-zinc-700 font-light">{result.treatments.organic.environmental_impact}</span>
+                    </p>
                   </div>
                 </div>
 
@@ -196,7 +249,58 @@ export default function UploadPage() {
                       <strong className="font-medium text-zinc-700 block mb-1">Safety:</strong>
                       <span className="text-zinc-700 font-light">{result.treatments.chemical.safety}</span>
                     </p>
+                    <p>
+                      <strong className="font-medium text-zinc-700 block mb-1">Environmental Impact:</strong>
+                      <span className="text-zinc-700 font-light">{result.treatments.chemical.environmental_impact}</span>
+                    </p>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* IPM Strategy */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100">
+              <h2 className="text-3xl font-light text-zinc-900 mb-8">
+                Sustainable IPM Strategy
+              </h2>
+
+              <div className="space-y-6">
+                {/* Companion Planting */}
+                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                  <strong className="text-sm font-medium text-emerald-700 block mb-3">Companion Planting Suggestions</strong>
+                  <ul className="space-y-2">
+                    {result.ipm_strategy.companion_planting?.map((suggestion: string, index: number) => (
+                      <li key={index} className="text-zinc-900 font-light flex items-start">
+                        <span className="text-emerald-600 mr-3 text-lg">•</span>
+                        <span>{suggestion}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Preventive Measures */}
+                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                  <strong className="text-sm font-medium text-emerald-700 block mb-3">Preventive Measures</strong>
+                  <ul className="space-y-2">
+                    {result.ipm_strategy.preventive_measures?.map((measure: string, index: number) => (
+                      <li key={index} className="text-zinc-900 font-light flex items-start">
+                        <span className="text-emerald-600 mr-3 text-lg">•</span>
+                        <span>{measure}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Predictive Risks */}
+                <div className="p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200">
+                  <strong className="text-sm font-medium text-yellow-700 block mb-2">Predictive Risks</strong>
+                  <p className="text-zinc-900 font-light">{result.ipm_strategy.predictive_risks}</p>
+                </div>
+
+                {/* Timing Optimization */}
+                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                  <strong className="text-sm font-medium text-emerald-700 block mb-3">Timing Optimization</strong>
+                  <p className="text-zinc-900 font-light leading-relaxed">{result.ipm_strategy.timing_optimization}</p>
                 </div>
               </div>
             </div>
