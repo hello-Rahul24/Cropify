@@ -21,16 +21,16 @@ export default function Navbar() {
         {/* Navigation Links */}
         <div className="flex items-center gap-1">
           <a
-            href="/analyze"
+            href="/upload"
             className="px-4 py-2 text-sm font-light text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-all duration-200"
           >
             Analyze
           </a>
           <a
-            href="/history"
+            href="/field-analysis"
             className="px-4 py-2 text-sm font-light text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-all duration-200"
           >
-            History
+            Field analysis
           </a>
           <a
             href="/chat"

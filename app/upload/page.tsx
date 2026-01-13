@@ -1,18 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Tooltip from "../components/Tooltip";
 
 export default function UploadPage() {
   const [image, setImage] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [satelliteResult, setSatelliteResult] = useState<null | {
-    ndvi: number;
-    status: string;
-    source: string;
-  }>(null);
-
-
 
   const handleAnalyze = async () => {
     if (!image) return;
@@ -39,40 +33,42 @@ export default function UploadPage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 py-16 px-6">
+    <main className="relative min-h-screen flex flex-col justify-center items-center text-center px-4 sm:px-8 overflow-hidden bg-zinc-50 py-16">
       {/* Grainy texture overlay */}
       <div
-        className="absolute inset-0 opacity-20 pointer-events-none"
+        className="absolute inset-0 opacity-40 pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      {/* Subtle blur shapes */}
-      <div className="absolute top-20 right-1/4 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
-      <div className="absolute bottom-40 left-1/4 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
+      {/* Enhanced blurred background shapes with more variety and smoother animation */}
+      <div className="absolute top-10 left-10 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"
+           style={{ animationDuration: '15s', animationDelay: '0s' }} />
+      <div className="absolute top-40 right-20 w-96 h-96 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"
+           style={{ animationDuration: '18s', animationDelay: '4s' }} />
+      <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-zinc-200 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob"
+           style={{ animationDuration: '12s', animationDelay: '2s' }} />
 
-      <div className="relative max-w-2xl mx-auto">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-0">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-block mb-4 px-4 py-1.5 bg-emerald-100 rounded-full">
+        <div className="text-center mb-12 animate-fade-in">
+          <div className="inline-block mb-4 px-4 py-1.5 bg-emerald-100 rounded-full shadow-sm transition-all duration-300 hover:shadow-md">
             <span className="text-xs font-medium text-emerald-800 tracking-wide">
               AI-POWERED ANALYSIS
             </span>
           </div>
-          <h1 className="text-5xl font-light tracking-tight text-zinc-900 mb-3">
+          <h1 className="text-5xl sm:text-7xl font-light tracking-tight text-zinc-900 mb-3 animate-fade-in animation-delay-200">
             Crop Leaf Health Analysis
           </h1>
-          <p className="text-zinc-600 font-light text-lg">
+          <p className="text-base sm:text-lg text-zinc-600 font-light max-w-xl mx-auto">
             Upload a clear photo of the affected leaf for instant diagnosis
           </p>
         </div>
 
-        
-
         {/* Upload Section */}
         {!result && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100 mb-8">
+          <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-lg border border-emerald-100 mb-8 animate-fade-in animation-delay-400">
             <div className="flex flex-col items-center">
               {/* Custom File Input */}
               <label className="cursor-pointer group">
@@ -86,7 +82,7 @@ export default function UploadPage() {
                   }}
                   className="hidden"
                 />
-                <div className="px-10 py-5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-2xl text-base font-medium hover:from-emerald-700 hover:to-green-700 transition-all duration-300 inline-block shadow-lg hover:shadow-xl hover:scale-105">
+                <div className="px-6 sm:px-10 py-3 sm:py-5 bg-black text-white rounded-2xl text-base font-medium hover:from-emerald-700 hover:to-green-700 transition-all duration-300 inline-block shadow-lg hover:shadow-xl hover:scale-105">
                   Choose Image
                 </div>
               </label>
@@ -102,28 +98,34 @@ export default function UploadPage() {
               <button
                 onClick={handleAnalyze}
                 disabled={!image || loading}
-                className="mt-8 px-10 py-5 bg-zinc-900 text-white rounded-2xl text-base font-medium hover:bg-zinc-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100"
+                className="mt-8 px-6 sm:px-10 py-3 sm:py-5 bg-zinc-900 text-white rounded-2xl text-base font-medium hover:bg-zinc-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100"
               >
                 {loading ? "Analyzing..." : "Analyze Leaf"}
               </button>
+              {loading && (
+                <p className="text-gray-700">
+                  it may take 1-2 min...
+                </p>
+              )}
             </div>
           </div>
         )}
-        {/*will make it better*/}
-        <a href="/field-analysis"><button
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-        >
-          Analyze Field via Satellite
-        </button></a>
-        
+        {/* Field Analysis Button */}
+        <a href="/field-analysis">
+          <button
+            className="mt-4 px-6 sm:px-8 py-3 sm:py-4 bg-green-600 text-white rounded-2xl text-base font-medium hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+          >
+            Analyze Field via Satellite
+          </button>
+        </a>
 
         {/* Results Section */}
         {result && (
-          <div className="space-y-6">
+          <div className="space-y-8 sm:space-y-12 animate-fade-in animation-delay-600">
             {/* Uploaded Image with Annotations */}
             {image && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100">
-                <h2 className="text-3xl font-light text-zinc-900 mb-8">
+              <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-lg border border-emerald-100">
+                <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 mb-8">
                   Analyzed Image
                 </h2>
                 <div className="flex flex-col items-center">
@@ -157,25 +159,25 @@ export default function UploadPage() {
             )}
 
             {/* Diagnosis */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100">
-              <h2 className="text-3xl font-light text-zinc-900 mb-8">
+            <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-lg border border-emerald-100">
+              <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 mb-8">
                 AI Diagnosis & Explanation
               </h2>
 
               <div className="space-y-6">
                 {/* Detected Issue */}
-                <div className="p-5 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl border border-emerald-200">
+                <div className="p-4 sm:p-5 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl border border-emerald-200 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-emerald-700 block mb-2">
                     Detected Issue
                   </strong>
-                  <p className="text-zinc-900 font-light text-lg">
+                  <p className="text-zinc-900 font-light text-base sm:text-lg">
                     {result.issue}
                   </p>
                 </div>
 
                 {/* Summary Card: Confidence, Severity, Urgency, Lifecycle */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 sm:p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                     <strong className="text-sm font-medium text-emerald-700 block mb-2">
                       Confidence Level
                     </strong>
@@ -183,15 +185,16 @@ export default function UploadPage() {
                       {result.confidence}
                     </p>
                   </div>
-                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                  <div className="p-4 sm:p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                     <strong className="text-sm font-medium text-emerald-700 block mb-2">
-                      Severity
+                      <Tooltip term="Severity" meaning="Shows how bad the damage is right now."/>
+                      
                     </strong>
                     <p className="text-zinc-900 font-light">
                       {result.severity}
                     </p>
                   </div>
-                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                  <div className="p-4 sm:p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                     <strong className="text-sm font-medium text-emerald-700 block mb-2">
                       Lifecycle Stage
                     </strong>
@@ -199,7 +202,7 @@ export default function UploadPage() {
                       {result.lifecycle_stage}
                     </p>
                   </div>
-                  <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                  <div className="p-4 sm:p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                     <strong className="text-sm font-medium text-emerald-700 block mb-2">
                       Urgency
                     </strong>
@@ -208,7 +211,7 @@ export default function UploadPage() {
                 </div>
 
                 {/* Yield Impact */}
-                <div className="p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200">
+                <div className="p-4 sm:p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-yellow-700 block mb-2">
                     Estimated Yield Impact (if untreated)
                   </strong>
@@ -218,7 +221,7 @@ export default function UploadPage() {
                 </div>
 
                 {/* Visual Symptoms */}
-                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                <div className="p-4 sm:p-5 bg-white rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-emerald-700 block mb-3">
                     Visual Symptoms Observed
                   </strong>
@@ -236,7 +239,7 @@ export default function UploadPage() {
                 </div>
 
                 {/* Reasoning */}
-                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                <div className="p-4 sm:p-5 bg-white rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-emerald-700 block mb-3">
                     Why the AI Thinks This
                   </strong>
@@ -248,15 +251,15 @@ export default function UploadPage() {
             </div>
 
             {/* Treatment Recommendations */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100">
-              <h2 className="text-3xl font-light text-zinc-900 mb-8">
+            <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-lg border border-emerald-100">
+              <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 mb-8">
                 Recommended Treatment Actions
               </h2>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Organic Treatment */}
-                <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-7 border-2 border-emerald-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <h3 className="text-xl font-medium text-emerald-800 mb-5 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-5 sm:p-7 border-2 border-emerald-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h3 className="text-xl sm:text-2xl font-medium text-emerald-800 mb-5 flex items-center gap-2">
                     <span className="text-2xl">🌱</span>
                     Organic Treatment
                   </h3>
@@ -305,8 +308,8 @@ export default function UploadPage() {
                 </div>
 
                 {/* Chemical Treatment */}
-                <div className="bg-gradient-to-br from-zinc-50 to-slate-50 rounded-2xl p-7 border-2 border-zinc-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <h3 className="text-xl font-medium text-zinc-800 mb-5 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-zinc-50 to-slate-50 rounded-2xl p-5 sm:p-7 border-2 border-zinc-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <h3 className="text-xl sm:text-2xl font-medium text-zinc-800 mb-5 flex items-center gap-2">
                     <span className="text-2xl">⚠️</span>
                     Chemical Treatment
                   </h3>
@@ -357,14 +360,14 @@ export default function UploadPage() {
             </div>
 
             {/* IPM Strategy */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg border border-emerald-100">
-              <h2 className="text-3xl font-light text-zinc-900 mb-8">
+            <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 sm:p-10 shadow-lg border border-emerald-100">
+              <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 mb-8">
                 Sustainable IPM Strategy
               </h2>
 
               <div className="space-y-6">
                 {/* Companion Planting */}
-                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                <div className="p-4 sm:p-5 bg-white rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-emerald-700 block mb-3">
                     Companion Planting Suggestions
                   </strong>
@@ -386,7 +389,7 @@ export default function UploadPage() {
                 </div>
 
                 {/* Preventive Measures */}
-                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                <div className="p-4 sm:p-5 bg-white rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-emerald-700 block mb-3">
                     Preventive Measures
                   </strong>
@@ -408,7 +411,7 @@ export default function UploadPage() {
                 </div>
 
                 {/* Predictive Risks */}
-                <div className="p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200">
+                <div className="p-4 sm:p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-yellow-700 block mb-2">
                     Predictive Risks
                   </strong>
@@ -418,7 +421,7 @@ export default function UploadPage() {
                 </div>
 
                 {/* Timing Optimization */}
-                <div className="p-5 bg-white rounded-2xl border border-emerald-100">
+                <div className="p-4 sm:p-5 bg-white rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <strong className="text-sm font-medium text-emerald-700 block mb-3">
                     Timing Optimization
                   </strong>
@@ -431,6 +434,9 @@ export default function UploadPage() {
           </div>
         )}
       </div>
+
+      {/* Bottom accent with subtle glow */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-200 to-transparent shadow-md" />
     </main>
   );
 }
