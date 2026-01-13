@@ -49,9 +49,10 @@ export default function LandingPage() {
         </div>
        
         {/* CTA Button with enhanced hover effects */}
+        
         <a
           href="/upload"
-          className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-zinc-900 text-white rounded-2xl text-base font-medium hover:bg-zinc-800 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer animate-fade-in animation-delay-600"
+          className="inline-flex items-center gap-2 px-6 py-3 m-2 sm:px-8 sm:py-4 bg-zinc-900 text-white rounded-2xl text-base font-medium hover:bg-zinc-800 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer animate-fade-in animation-delay-600"
         >
           Analyze Crop Image
           <svg
@@ -68,19 +69,36 @@ export default function LandingPage() {
             />
           </svg>
         </a>
-       
+        <a
+          href="/chat"
+          className="inline-flex items-center m-2 gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-green-200 text-black rounded-2xl text-base font-medium hover:bg-green-800 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer animate-fade-in animation-delay-600"
+        >
+          Ai Argonomist
+          <svg
+            className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
+          </svg>
+        </a>
+        
         {/* Secondary Links with smoother transitions */}
         <div className="mt-12 sm:mt-16 flex gap-8 justify-center text-sm">
           <a
-            href="/about"
-            className="text-zinc-500 hover:text-emerald-700 transition-colors duration-300 font-light cursor-pointer"
+            className="text-zinc-500 hover:text-emerald-700 transition-colors duration-300 font-light"
           >
             About
           </a>
           <span className="text-zinc-300">•</span>
           <a
-            href="/demo"
-            className="text-zinc-500 hover:text-emerald-700 transition-colors duration-300 font-light cursor-pointer"
+            className="text-zinc-500 hover:text-emerald-700 transition-colors duration-300 font-light"
           >
             Demo
           </a>

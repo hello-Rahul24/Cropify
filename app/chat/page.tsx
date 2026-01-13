@@ -118,26 +118,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-emerald-100 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6 py-6">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-100 rounded-xl shadow-lg">
-              <Sprout className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                AI Agronomist Assistant
-              </h1>
-              <p className="text-gray-600 text-sm">
-                Expert insights on crops, diseases & treatments
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div className="h-[90vh] bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex flex-col">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-6 py-6">
@@ -170,7 +151,7 @@ export default function ChatPage() {
                   <div
                     className={`max-w-[80%] rounded-2xl px-5 py-4 ${
                       msg.type === "user"
-                        ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white"
+                        ? "bg-green-700 text-white"
                         : msg.isError
                         ? "bg-red-50 border-2 border-red-200 text-red-800"
                         : "bg-white border-2 border-emerald-100 text-gray-800"
@@ -223,7 +204,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-white/90 backdrop-blur-sm border-t border-emerald-100 shadow-lg">
+      <div className="bg-gray-100 backdrop-blur-sm border-t border-emerald-100 shadow-lg">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex gap-3 items-end">
             <textarea
@@ -232,7 +213,7 @@ export default function ChatPage() {
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask about crop diseases, pests, treatments..."
-              className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition-all outline-none resize-none text-gray-700 placeholder-gray-400 max-h-32"
+              className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition-all outline-none resize-none text-black placeholder-gray-800 max-h-32"
               style={{ minHeight: "48px" }}
               disabled={loading}
             />
